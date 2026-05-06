@@ -5,11 +5,12 @@ public class JogoDaVelha{
         String[][] jogo = {{"[ ]", "[ ]", "[ ]"}, {"[ ]", "[ ]", "[ ]"}, {"[ ]", "[ ]", "[ ]"}};
         boolean fim_do_jogo = false;
         boolean velha = false;
+        int qnt_jogadas = 0;
+        boolean vezJogador;
+        System.out.println("Jogo da velha: ");
         do{
-            boolean jogou = true;
-            int qnt_jogadas = 0;
-            int linha = -1, coluna = -1;;
-            System.out.println("Jogo da velha: ");
+            vezJogador = true;
+            int linha = -1, coluna = -1;
             for (int i = 0; i < 3; i++){
                 if (jogo[i][0] == jogo[i][1] && jogo[i][0] == jogo[i][2] && jogo[i][0] != "[ ]"){
                     fim_do_jogo = true;
@@ -19,9 +20,6 @@ public class JogoDaVelha{
                         if (jogo[0][j] == jogo[1][j] && jogo[0][j] == jogo[2][j] && jogo[0][j] != "[ ]"){
                             fim_do_jogo = true;
                         }
-                        if (jogo[i][j] != "[ ]"){
-                            qnt_jogadas += 1;
-                        }
                     }
                 System.out.println();
             }
@@ -30,9 +28,9 @@ public class JogoDaVelha{
             }
             if(qnt_jogadas == 9){
                 fim_do_jogo = true;
-                velha = true;
+                System.out.println("Deu velha...");
             }
-            if(fim_do_jogo == true){break;}
+            if(fim_do_jogo){break;}
             System.out.println("Escolha aonde você vai jogar:");
             while(linha > 2 || linha < 0){
                 System.out.print("Linha (0 até 2): ");
@@ -44,166 +42,106 @@ public class JogoDaVelha{
             }
             if(jogo[linha][coluna] == "[ ]"){
                 jogo[linha][coluna] = "[X]";
+                qnt_jogadas++;
+                vezJogador = false;
             }
-            else{
-                jogou = false;
+            //Se há possibilidade de ganhar nessa jogada, ganhe.
+            if(qnt_jogadas >= 4){
+                for(int i = 0; i < 3; i++){
+                    if (jogo[i][0] == "[O]" && jogo[i][1] == "[O]" && vezJogador == false && jogo[i][2] == "[ ]"){
+                        jogo[i][2] = "[O]"; vezJogador=true; qnt_jogadas++;}
+                    if (jogo[i][0] == "[O]" && jogo[i][2] == "[O]" && vezJogador == false && jogo[i][1] == "[ ]"){
+                        jogo[i][1] = "[O]"; vezJogador=true; qnt_jogadas++;}
+                    if (jogo[i][1] == "[O]" && jogo[i][2] == "[O]" && vezJogador == false && jogo[i][0] == "[ ]"){
+                        jogo[i][0] = "[O]"; vezJogador=true; qnt_jogadas++;}
+                }
+                for(int j = 0; j < 3; j++){
+                    if (jogo[0][j] == "[O]" && jogo[1][j] == "[O]" && vezJogador == false && jogo[2][j] == "[ ]"){
+                        jogo[2][j] = "[O]"; vezJogador=true; qnt_jogadas++;}
+                    if (jogo[0][j] == "[O]" && jogo[2][j] == "[O]" && vezJogador == false && jogo[1][j] == "[ ]"){
+                        jogo[1][j] = "[O]"; vezJogador=true; qnt_jogadas++;}
+                    if (jogo[1][j] == "[O]" && jogo[2][j] == "[O]" && vezJogador == false && jogo[0][j] == "[ ]"){
+                        jogo[0][j] = "[O]"; vezJogador=true; qnt_jogadas++;}
+                }
             }
-            if(jogo[1][1] == "[X]"  && jogou == true){
-                jogo[0][0] = "[O]";
-                if((jogo[2][2] == "[X]" && jogo[2][0] == "[ ]") || jogo[2][0] == "[X]"){
+            //Se há possibilidade de evitar a perda na próxima jogada, não perca.
+            if(qnt_jogadas >= 2){
+                for(int i = 0; i < 3; i++){
+                    if(vezJogador == false){
+                        if (jogo[i][0] == "[X]" && jogo[i][1] == "[X]" && vezJogador == false && jogo[i][2] == "[ ]"){
+                            jogo[i][2] = "[O]"; vezJogador=true; qnt_jogadas++;}
+                        if (jogo[i][0] == "[X]" && jogo[i][2] == "[X]" && vezJogador == false && jogo[i][1] == "[ ]"){
+                            jogo[i][1] = "[O]"; vezJogador=true; qnt_jogadas++;}
+                        if (jogo[i][1] == "[X]" && jogo[i][2] == "[X]" && vezJogador == false && jogo[i][0] == "[ ]"){
+                            jogo[i][0] = "[O]"; vezJogador=true; qnt_jogadas++;}
+                    }
+                }
+                for(int j = 0; j < 3; j++){
+                    if (jogo[0][j] == "[X]" && jogo[1][j] == "[X]" && vezJogador == false && jogo[2][j] == "[ ]"){
+                        jogo[2][j] = "[O]"; vezJogador=true; ++qnt_jogadas;}
+                    if (jogo[0][j] == "[X]" && jogo[2][j] == "[X]" && vezJogador == false && jogo[1][j] == "[ ]"){
+                        jogo[1][j] = "[O]"; vezJogador=true; qnt_jogadas++;}
+                    if (jogo[1][j] == "[X]" && jogo[2][j] == "[X]" && vezJogador == false && jogo[0][j] == "[ ]"){
+                        jogo[0][j] = "[O]"; vezJogador=true; qnt_jogadas++;}
+                }
+                if((jogo[0][0] == "[X]" && jogo[2][2] == "[X]") || (jogo[0][2] == "[X]" && jogo[2][0] == "[X]") && vezJogador == false && jogo[1][1] == "[X]"){
+                    jogo[1][1] = "[O]";
+                    qnt_jogadas++;
+                }
+                if (jogo[1][1] == jogo[0][0] && jogo[1][1] == "[X]" && jogo[2][2] == "[ ]"){
+                    jogo[2][2] = "[O]";
+                    qnt_jogadas++;
+                }
+                if (jogo[1][1] == jogo[2][0] && jogo[1][1] == "[X]" && jogo[0][2] == "[ ]"){
                     jogo[0][2] = "[O]";
-                    if (jogo[0][1] == "[X]"){
-                        jogo[2][1] = "[O]";
-                        if(jogo[1][0] == "[X]"){
-                            jogo[1][2] = "[O]";
-                        }
-                        else if (qnt_jogadas != 4){
-                            jogo[1][0] = "[O]";
-                        }
-                    }
-                    else if (qnt_jogadas != 2){
-                        jogo[0][1] = "[O]";
-                    }
+                    qnt_jogadas++;
                 }
-                else if(jogo[0][2] == "[X]" && jogo[2][1] == "[ ]"){
+                if (jogo[1][1] == jogo[0][2] && jogo[1][1] == "[X]" && jogo[2][0] == "[ ]"){
                     jogo[2][0] = "[O]";
-                    if(jogo[1][0] == "[X]"){
-                        jogo[1][2] = "[O]";
-                        if (jogo[2][1] == "[X]"){
-                            jogo[0][1] = "[O]";
-                        }
-                        else if (qnt_jogadas != 4){
-                            jogo[2][1] = "[O]";
-                        }
+                    qnt_jogadas++;
+                }
+                if (jogo[1][1] == jogo[2][2] && jogo[1][1] == "[X]" && jogo[0][0] == "[ ]"){
+                    jogo[0][0] = "[O]";
+                    qnt_jogadas++;
+                } 
+            }
+            if (jogo[1][1] == "[ ]" && qnt_jogadas == 1){jogo[1][1] = "[O]";qnt_jogadas++;}
+            if(jogo[1][1] == "[X]"){
+                if(qnt_jogadas == 1){jogo[0][0] = "[O]"; qnt_jogadas++;}
+                if(qnt_jogadas == 7 && jogo[2][2] == "[X]"){
+                    if(jogo[0][1] == "[ ]" && jogo[2][1] == "[ ]"){
+                        jogo[0][1] = "[O]";
+                        qnt_jogadas++;
                     }
-                    else if (qnt_jogadas != 2){
+                    else if (jogo[1][0] == "[ ]" && jogo[1][2] == "[ ]"){
                         jogo[1][0] = "[O]";
+                        qnt_jogadas++;
+                    }
+                    else if(jogo[2][0] == "[ ]" && jogo[0][2] == "[ ]"){
+                        jogo[0][2] = "[O]";
+                        qnt_jogadas++;
                     }
                 }
-                else if (jogo[2][1] == "[X]"){
+                    if(jogo[2][0] == "[X]" && qnt_jogadas == 7){
+                        jogo[1][0] = "[O]";
+                        qnt_jogadas++;
+                    }
+                if(qnt_jogadas == 5  && jogo[0][1] == "[X]" && jogo[2][2] == "[X]"){
+                    jogo[2][0] = "[O]";
+                    qnt_jogadas++;
+                }
+                else if((qnt_jogadas == 5 || qnt_jogadas == 6) && jogo[2][2] == "[X]"){
                     jogo[0][1] = "[O]";
-                    if (jogo[0][2] == "[X]"){
-                        jogo[2][0] = "[O]";
-                        if (jogo[1][0] == "[X]"){
-                            jogo[1][2] = "[O]";
-                        }
-                        else if (qnt_jogadas != 4){
-                            jogo[1][0] = "[O]";
-                        }
-                    }
-                    else if (qnt_jogadas != 2){
-                        jogo[0][2] = "[O]";
-                    }
+                    qnt_jogadas++;
                 }
-                else if (jogo[1][2] == "[X]"){
-                    jogo[1][0] = "[O]";
-                    if (jogo[2][0] == "[X]"){
-                        jogo[0][2] = "[O]";
-                        if (jogo[0][1] == "[X]"){
-                            jogo[2][1] = "[O]";
-                        }
-                        else{
-                            jogo[0][1] = "[O]";
-                        }
-                    }
-                    else{
-                        jogo[2][0] = "[O]";
-                    }
-                }
-                else if (jogo[0][1] == "[X]"){
-                    jogo[2][1] = "[O]";
-                    if (jogo[0][2] == "[X]"){
-                        jogo[2][0] = "[O]";
-                        if (jogo[1][0] == "[X]"){
-                            jogo[1][2] = "[O]";
-                        }
-                        else if (qnt_jogadas != 4){
-                            jogo[1][0] = "[O]";
-                        }
-                    }
-                    else if (jogo[1][2] == "[X]"){
-                        jogo[1][0] = "[O]";
-                        if (jogo[2][0] == "[X]"){
-                            jogo[0][2] = "[O]";
-                        }
-                        else if(qnt_jogadas != 4){
-                            jogo[2][0] = "[O]";
-                        }
-                    }
-                    else if (jogo[2][2] == "[X]"){
-                        jogo[1][0] = "[O]";
-                        if (jogo[2][0] == "[X]"){
-                            jogo[0][2] = "[O]";
-                        }
-                        else if(qnt_jogadas != 4){
-                            jogo[2][0] = "[O]";
-                        }
-                    }
-                    else if (jogo[1][0] == "[X]"){
-                        jogo[1][2] = "[O]";
-                        if (jogo[0][2] == "[X]"){
-                            jogo[2][0] = "[O]";
-                        }
-                        else{
-                            jogo[0][2] = "[O]";
-                        }
-                    }
-                    else{
-                        jogo[0][2] = "[O]";
-                        if(jogo[1][0] == "[X]"){
-                            jogo[1][2] = "[O]";
-                        }
-                        else{
-                            jogo[1][0] = "[O]";
-                        }
-                    }
-                }
-                else if (jogo[1][0] == "[X]"){
-                    jogo[1][2] = "[O]";
-                    if (jogo[2][0] == "[X]"){
-                        jogo[0][2] = "[O]";
-                        if (jogo[0][1] == "[X]"){
-                            jogo[2][1] = "[O]";
-                        }
-                        else{
-                            jogo[0][1] = "[O]";
-                        }
-                    }
-                    else if (jogo[0][2] == "[X]"){
-                        jogo[2][0] = "[O]";
-                        if (jogo[2][1] == "[X]"){
-                            jogo[0][1] = "[O]";
-                        }
-                        else{
-                            jogo[2][1] = "[O]";
-                        }
-                    }
-                    else if (jogo[2][1] == "[X]"){
-                        jogo[0][1] = "[O]";
-                        if (jogo[0][2] == "[X]"){
-                            jogo[2][0] = "[O]";
-                        }
-                        else{
-                            jogo[0][2] = "[O]";
-                        }
-                    }
-                    else if (jogo[2][2] == "[X]"){
-                        jogo[0][1] = "[O]";
-                        if (jogo[0][2] == "[X]"){
-                            jogo[2][0] = "O";
-                        }
-                        else{
-                            jogo[0][2] = "[O]";
-                        }
-                    }
+                if(qnt_jogadas == 3 && jogo[2][2] == "[X]"){
+                    jogo[0][2] = "[O]";
+                    qnt_jogadas++;
                 }
             }
         }while (fim_do_jogo != true);
         input.close();
         if (velha == false){
         System.out.printf("O jogador que usava [O] venceu!");}
-        else{
-            System.out.println("Deu velha...");
-        }
     }
 }
