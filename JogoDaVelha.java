@@ -1,4 +1,4 @@
-import java.util.Scanner;
+\import java.util.Scanner;
 public class JogoDaVelha{
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
@@ -130,7 +130,7 @@ public class JogoDaVelha{
                     jogo[2][0] = "[O]";
                     qnt_jogadas++;
                 }
-                else if((qnt_jogadas == 5 || qnt_jogadas == 6) && jogo[2][2] == "[X]"){
+                else if((qnt_jogadas == 5 || qnt_jogadas == 6) && jogo[2][2] == "[X]" && vezJogador == false){
                     jogo[0][1] = "[O]";
                     qnt_jogadas++;
                 }
