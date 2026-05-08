@@ -1,14 +1,15 @@
-\import java.util.Scanner;
+import java.util.Scanner;
 public class JogoDaVelha{
     public static void main(String[] args) {
+
         Scanner input = new Scanner(System.in);
         String[][] jogo = {{"[ ]", "[ ]", "[ ]"}, {"[ ]", "[ ]", "[ ]"}, {"[ ]", "[ ]", "[ ]"}};
         boolean fim_do_jogo = false;
         boolean velha = false;
-        int qnt_jogadas = 0;
         boolean vezJogador;
         System.out.println("Jogo da velha: ");
         do{
+            int qnt_jogadas = 0;
             vezJogador = true;
             int linha = -1, coluna = -1;
             for (int i = 0; i < 3; i++){
@@ -20,6 +21,9 @@ public class JogoDaVelha{
                         if (jogo[0][j] == jogo[1][j] && jogo[0][j] == jogo[2][j] && jogo[0][j] != "[ ]"){
                             fim_do_jogo = true;
                         }
+                        if (jogo[i][j] != "[ ]"){
+                            qnt_jogadas++;
+                        }
                     }
                 System.out.println();
             }
@@ -29,6 +33,7 @@ public class JogoDaVelha{
             if(qnt_jogadas == 9){
                 fim_do_jogo = true;
                 System.out.println("Deu velha...");
+                velha = true;
             }
             if(fim_do_jogo){break;}
             System.out.println("Escolha aonde você vai jogar:");
@@ -63,6 +68,20 @@ public class JogoDaVelha{
                     if (jogo[1][j] == "[O]" && jogo[2][j] == "[O]" && vezJogador == false && jogo[0][j] == "[ ]"){
                         jogo[0][j] = "[O]"; vezJogador=true; qnt_jogadas++;}
                 }
+                if(jogo[1][1] == "[O]"){
+                    if(jogo[0][2] == "[O]" && jogo[2][0] == "[ ]" && vezJogador == false){
+                        jogo[2][0] = "[O]"; qnt_jogadas++; vezJogador = true;
+                    }
+                    else if(jogo[0][0] == "[O]" && jogo[2][2] == "[ ]" && vezJogador == false){
+                        jogo[2][2] = "[O]"; qnt_jogadas++; vezJogador = true;
+                    }
+                    else if(jogo[2][0] == "[O]" && jogo[0][2] == "[ ]" && vezJogador == false){
+                        jogo[0][2] = "[O]"; qnt_jogadas++; vezJogador = true;
+                    }
+                    else if(jogo[2][2] == "[O]" && jogo[0][0] == "[ ]" && vezJogador == false){
+                        jogo[0][0] = "[O]"; qnt_jogadas++; vezJogador = true;
+                    }
+                }
             }
             //Se há possibilidade de evitar a perda na próxima jogada, não perca.
             if(qnt_jogadas >= 2){
@@ -84,7 +103,7 @@ public class JogoDaVelha{
                     if (jogo[1][j] == "[X]" && jogo[2][j] == "[X]" && vezJogador == false && jogo[0][j] == "[ ]"){
                         jogo[0][j] = "[O]"; vezJogador=true; qnt_jogadas++;}
                 }
-                if((jogo[0][0] == "[X]" && jogo[2][2] == "[X]") || (jogo[0][2] == "[X]" && jogo[2][0] == "[X]") && vezJogador == false && jogo[1][1] == "[X]"){
+                if(((jogo[0][0] == "[X]" && jogo[2][2] == "[X]") || (jogo[0][2] == "[X]" && jogo[2][0] == "[X]")) && vezJogador == false && jogo[1][1] == "[X]"){
                     jogo[1][1] = "[O]";
                     qnt_jogadas++;
                 }
@@ -105,27 +124,21 @@ public class JogoDaVelha{
                     qnt_jogadas++;
                 } 
             }
+            if(qnt_jogadas == 7){
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        if(jogo[i][j] == "[ ]" && vezJogador == false){
+                            jogo[i][j] = "[O]";
+                            qnt_jogadas++;
+                            vezJogador = true;
+                            break;
+                        }
+                    }
+                }
+            }
             if (jogo[1][1] == "[ ]" && qnt_jogadas == 1){jogo[1][1] = "[O]";qnt_jogadas++;}
             if(jogo[1][1] == "[X]"){
                 if(qnt_jogadas == 1){jogo[0][0] = "[O]"; qnt_jogadas++;}
-                if(qnt_jogadas == 7 && jogo[2][2] == "[X]"){
-                    if(jogo[0][1] == "[ ]" && jogo[2][1] == "[ ]"){
-                        jogo[0][1] = "[O]";
-                        qnt_jogadas++;
-                    }
-                    else if (jogo[1][0] == "[ ]" && jogo[1][2] == "[ ]"){
-                        jogo[1][0] = "[O]";
-                        qnt_jogadas++;
-                    }
-                    else if(jogo[2][0] == "[ ]" && jogo[0][2] == "[ ]"){
-                        jogo[0][2] = "[O]";
-                        qnt_jogadas++;
-                    }
-                }
-                    if(jogo[2][0] == "[X]" && qnt_jogadas == 7){
-                        jogo[1][0] = "[O]";
-                        qnt_jogadas++;
-                    }
                 if(qnt_jogadas == 5  && jogo[0][1] == "[X]" && jogo[2][2] == "[X]"){
                     jogo[2][0] = "[O]";
                     qnt_jogadas++;
@@ -137,6 +150,34 @@ public class JogoDaVelha{
                 if(qnt_jogadas == 3 && jogo[2][2] == "[X]"){
                     jogo[0][2] = "[O]";
                     qnt_jogadas++;
+                }
+            }
+            else{
+                if(qnt_jogadas == 3){
+                    if((jogo[0][0] == "[X]" && jogo[2][2] == "[X]") || (jogo[0][2] == jogo[2][0] && jogo[2][0] == "[X]")){
+                        jogo[0][1] = "[O]";
+                        qnt_jogadas++;
+                    }
+                    if(jogo[0][0] == "[X]" && (jogo[2][1] == "[X]" || jogo[1][2] == "[X]")){
+                        if(qnt_jogadas == 3){
+                            jogo[2][2] = "[O]";
+                            qnt_jogadas++;
+                        }
+                        if(qnt_jogadas == 5 && jogo[0][2] == "[ ]"){
+                            jogo[0][2] = "[O]";
+                            qnt_jogadas++;
+                        }
+                    }
+                    
+                }
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++){
+                        if (qnt_jogadas == 5 && vezJogador == false && jogo[i][j] == "[ ]"){
+                            jogo[i][j] = "[O]";
+                            qnt_jogadas++;
+                            vezJogador = true;
+                        }
+                    }
                 }
             }
         }while (fim_do_jogo != true);
